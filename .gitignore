@@ -20,5 +20,7 @@ server.mjs
 *.zip
 *.bin
 *.spec
+data/
+*.db
 
 

@@ -12,6 +12,55 @@ const STORAGE_KEY_PROJECTS = 'dc_crm_projects_v5';
 const STORAGE_KEY_ACTIVE_PROJECT = 'dc_crm_active_project_v5';
 const STORAGE_KEY_SIDEBAR = 'dc_crm_sidebar_collapsed_v5';
 
+// SQLite 远程后端异步持久化
+let syncTimer: any = null;
+const pendingSyncQueue: Record<string, any> = {};
+
+export function syncToSqlite(key: string, value: any): void {
+  pendingSyncQueue[key] = value;
+  if (syncTimer) clearTimeout(syncTimer);
+  syncTimer = setTimeout(async () => {
+    const items = { ...pendingSyncQueue };
+    for (const k of Object.keys(pendingSyncQueue)) {
+      delete pendingSyncQueue[k];
+    }
+    try {
+      await fetch('/api/storage/batch-save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items }),
+      });
+    } catch (e) {
+      // 离线模式下保留 localStorage 即可，忽略网络错误
+    }
+  }, 400);
+}
+
+/**
+ * 启动时从 SQLite 数据库拉取数据并补齐/同步到本地
+ */
+export async function syncFromSqlite(): Promise<boolean> {
+  try {
+    const res = await fetch('/api/storage/all');
+    if (!res.ok) return false;
+    const body = await res.json();
+    if (body.success && body.data) {
+      const keys = Object.keys(body.data);
+      if (keys.length > 0) {
+        for (const [k, v] of Object.entries(body.data)) {
+          try {
+            localStorage.setItem(k, JSON.stringify(v));
+          } catch {}
+        }
+        return true;
+      }
+    }
+  } catch (err) {
+    // 离线或开发环境直接走本地
+  }
+  return false;
+}
+
 export function loadProjects(): ProjectMap[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY_PROJECTS);
@@ -30,6 +79,7 @@ export function loadProjects(): ProjectMap[] {
 export function saveProjects(projects: ProjectMap[]): void {
   try {
     localStorage.setItem(STORAGE_KEY_PROJECTS, JSON.stringify(projects));
+    syncToSqlite(STORAGE_KEY_PROJECTS, projects);
   } catch (err) {
     console.warn('Failed to save projects:', err);
   }
@@ -66,7 +116,9 @@ export function loadSavedPeople(projectId: string = 'proj-huayun'): Person[] {
 
 export function savePeople(people: Person[], projectId: string = 'proj-huayun'): void {
   try {
-    localStorage.setItem(`dc_crm_people_v6_${projectId}`, JSON.stringify(people));
+    const key = `dc_crm_people_v6_${projectId}`;
+    localStorage.setItem(key, JSON.stringify(people));
+    syncToSqlite(key, people);
   } catch (err) {
     console.warn('Failed to save people to localStorage:', err);
   }
@@ -105,7 +157,9 @@ export function saveRelationships(
   projectId: string = 'proj-huayun'
 ): void {
   try {
-    localStorage.setItem(`dc_crm_relationships_v6_${projectId}`, JSON.stringify(relationships));
+    const key = `dc_crm_relationships_v6_${projectId}`;
+    localStorage.setItem(key, JSON.stringify(relationships));
+    syncToSqlite(key, relationships);
   } catch (err) {
     console.warn('Failed to save relationships to localStorage:', err);
   }
@@ -128,7 +182,9 @@ export function loadSavedGroupFrames(projectId: string = 'proj-huayun'): GroupFr
 
 export function saveGroupFrames(frames: GroupFrame[], projectId: string = 'proj-huayun'): void {
   try {
-    localStorage.setItem(`dc_crm_frames_v6_${projectId}`, JSON.stringify(frames));
+    const key = `dc_crm_frames_v6_${projectId}`;
+    localStorage.setItem(key, JSON.stringify(frames));
+    syncToSqlite(key, frames);
   } catch (err) {
     console.warn('Failed to save group frames:', err);
   }
@@ -151,7 +207,9 @@ export function loadSavedVisitRecords(projectId: string = 'proj-huayun'): VisitR
 
 export function saveVisitRecords(records: VisitRecord[], projectId: string = 'proj-huayun'): void {
   try {
-    localStorage.setItem(`dc_crm_visits_v5_${projectId}`, JSON.stringify(records));
+    const key = `dc_crm_visits_v5_${projectId}`;
+    localStorage.setItem(key, JSON.stringify(records));
+    syncToSqlite(key, records);
   } catch (err) {
     console.warn('Failed to save visits:', err);
   }

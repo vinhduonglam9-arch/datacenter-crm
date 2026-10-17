@@ -27,6 +27,7 @@ import {
   saveSidebarCollapsed,
   loadSavedStylePreferences,
   saveStylePreferences,
+  syncFromSqlite,
 } from './utils/storage.ts';
 import {
   INITIAL_PEOPLE,
@@ -200,7 +201,20 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, [handleUndo, handleRedo]);
 
-  // Sync state to LocalStorage per active project
+  // Startup: Sync latest data from SQLite if available
+  useEffect(() => {
+    syncFromSqlite().then((hasSynced) => {
+      if (hasSynced) {
+        setProjects(loadProjects());
+        setPeople(loadSavedPeople(activeProjectId));
+        setRelationships(loadSavedRelationships(activeProjectId));
+        setGroupFrames(loadSavedGroupFrames(activeProjectId));
+        setVisits(loadSavedVisitRecords(activeProjectId));
+      }
+    });
+  }, [activeProjectId]);
+
+  // Sync state to LocalStorage & SQLite per active project
   useEffect(() => {
     saveProjects(projects);
   }, [projects]);
