@@ -8,6 +8,38 @@
 
 ---
 
+## 📸 系统界面全景预览
+
+### 1. 智算项目客户关系拓扑画布 (核心主视图)
+支持拖拽、连线、关系温度标记、分组框以及铁三角拍板人/把关人动态定位。
+![智算拓扑关系图谱](docs/screenshots/01-topology-canvas.png)
+
+### 2. 算力中心工程作战大屏 (Project Dashboard)
+宏观掌控在建算力 MW 总负荷、各标段关键决策链覆盖度、支持率雷达及拜访跟进。
+![项目总览仪表盘](docs/screenshots/02-project-dashboard.png)
+
+### 3. 最短高层突破路径寻径 (BFS 决策链穿透)
+自动计算从我方负责人触达甲方核心决策拍板人的最短信任推荐路径。
+![突破寻径分析](docs/screenshots/03-influence-path.png)
+
+### 4. 100% 本地 CPU 离线名片 OCR 与结构化提取
+无需外网及 GPU，支持模糊拍照名片本地自动纠错与结构化解析，一键入库。
+![本地离线 OCR 识别](docs/screenshots/04-ocr-recognition.png)
+
+### 5. 画布视觉样式中心 (20×20×20 定制系统)
+内置行业主流深浅工程主题、多种节点与连接线材质，适配多样化汇报场景。
+![样式中心](docs/screenshots/05-style-center.png)
+
+### 6. 图层分级管理器
+支持对干系人、组织分组框、关系网进行独立锁定、隐藏与上下层级拖拽调序。
+![图层管理器](docs/screenshots/06-layer-management.png)
+
+### 7. 高清战报与工业级图纸导出中心
+提供 1:1 所见即所得的高清 PNG、矢量 SVG、投委会报告 PDF 与 Excel 台账数据导出。
+![导出中心](docs/screenshots/07-export-center.png)
+
+---
+
 ## 🌟 核心特性
 
 ### 1. 100% 本地 CPU 离线名片 OCR 与大模型抽取
