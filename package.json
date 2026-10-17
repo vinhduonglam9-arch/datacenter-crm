@@ -1,7 +1,7 @@
 {
   "name": "datacenter-crm",
   "productName": "数据中心CRM系统",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "数据中心项目客户关系管理系统 - 离线CPU名片OCR与智算拓扑协作平台",
   "main": "desktop/main.cjs",
   "private": true,
