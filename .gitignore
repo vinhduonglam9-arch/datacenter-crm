@@ -1,0 +1,20 @@
+node_modules/
+build/
+dist/
+dist-server/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# Large binaries and portable release artifacts
+models/
+bin/
+release/
+*.gguf
+*.onnx
+*.exe
+*.zip
+*.bin
+
