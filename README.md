@@ -70,15 +70,15 @@
 
 本系统已提供两种面向 Windows 用户的交付形态（均包含完整的离线推理模型与运行环境，**无需目标电脑安装 Node.js、Python、CUDA 或任何依赖**）：
 
-### 1. Windows 安装包版 (推荐)
-- **下载文件**：`DataCenter-CRM-1.0.0-Setup.exe`（在 GitHub Releases 中获取）
-- **安装特性**：
-  - 采用定制 NSIS 安装流程，自动优先探测 `D:\`、`E:\` 等大容量非系统盘作为安装目标，防止离线模型占用 C 盘空间。
-  - 自动创建桌面与开始菜单快捷方式，支持系统设置中安全干净卸载。
+### 1. 完整版 (Standard Edition - 含本地离线 OCR 与 Qwen2.5 大模型)
+- **Windows 安装包**：`DataCenter-CRM-1.0.0-Setup.exe` (约 1.45 GB)
+- **绿色免安装便携版**：`DataCenter-CRM-Portable-v2.0.zip` (约 1.57 GB)
+- **特点**：全功能开箱即用，自带 RapidOCR 与 Qwen2.5-1.5B GGUF 离线权重。
 
-### 2. 纯绿色免安装便携版
-- **下载文件**：`DataCenter-CRM-Portable-v2.0.zip`
-- **使用方法**：解压至任意目录，双击 `启动系统.bat` 或 `start.bat` 即可自动拉起服务并打开浏览器运行。
+### 2. 精简版 (Lite Edition - 去除 OCR 与 AI 模型，超小体积)
+- **Windows 安装包**：`DataCenter-CRM-Lite-2.0.0-Setup.exe` (约 154 MB，体积缩小 90%)
+- **绿色免安装便携版**：`DataCenter-CRM-Lite-Portable-v2.0.zip` (约 224 MB，体积缩小 85%)
+- **特点**：完全移除 OCR 引擎和庞大权重包，极速下载，保留所有算力看板、拓扑画布、突破寻径、样式中心与高清导出功能。
 
 ---
 

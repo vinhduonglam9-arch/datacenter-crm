@@ -1,0 +1,6 @@
+{
+  "name": "数智算力中心项目客户关系拓扑与作战平台",
+  "description": "面向大型算力与数据中心工程项目的全栈客户关系管理（CRM）与类 BoardMix 交互式决策链拓扑白板，支持多项目 Dashboard 经营看板、图层管理、智能圈选与右键快捷操作、名片 OCR 识别及高清全格式导出。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
