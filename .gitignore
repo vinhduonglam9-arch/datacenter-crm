@@ -12,9 +12,13 @@ coverage/
 models/
 bin/
 release/
+installer-dist/
+server.mjs
 *.gguf
 *.onnx
 *.exe
 *.zip
 *.bin
+*.spec
+
 

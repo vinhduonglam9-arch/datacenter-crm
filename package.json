@@ -1,15 +1,66 @@
 {
-  "name": "react-example",
+  "name": "datacenter-crm",
+  "productName": "数据中心CRM系统",
+  "version": "1.0.0",
+  "description": "数据中心项目客户关系管理系统 - 离线CPU名片OCR与智算拓扑协作平台",
+  "main": "desktop/main.cjs",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
     "start": "tsx server.ts",
     "build": "vite build",
     "preview": "vite preview",
-    "clean": "rm -rf dist server.js",
+    "bundle:server": "esbuild server.ts --bundle --platform=node --format=esm --outfile=server.mjs --external:express --external:@google/genai --external:dotenv --external:vite",
+    "pack:installer": "pnpm run build && pnpm run bundle:server && electron-builder --win nsis",
+    "pack:dir": "pnpm run build && pnpm run bundle:server && electron-builder --win dir",
+    "clean": "rm -rf dist server.mjs installer-dist",
     "lint": "tsc --noEmit"
+  },
+  "build": {
+    "appId": "com.datacenter.crm",
+    "productName": "数据中心CRM系统",
+    "directories": {
+      "output": "installer-dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "desktop/**/*",
+      "dist/**/*",
+      "bin/**/*",
+      "models/**/*",
+      "node_modules/express/**/*",
+      "node_modules/@google/**/*",
+      "node_modules/dotenv/**/*",
+      "server.mjs",
+      "package.json"
+    ],
+    "asar": false,
+    "win": {
+      "executableName": "数据中心CRM系统",
+      "icon": "build/icon.ico",
+      "signExecutable": false,
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "数据中心CRM系统",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "include": "build/installer.nsh",
+      "artifactName": "DataCenter-CRM-${version}-Setup.${ext}"
+    }
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
@@ -25,14 +76,16 @@
     "vite": "^8.3.0"
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "@types/node": "^22.14.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "autoprefixer": "^10.4.21",
+    "electron": "^44.9.0",
+    "electron-builder": "^26.15.3",
     "esbuild": "^0.25.0",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.21.0",
-    "typescript": "^7.0.2",
-    "@types/express": "^4.17.21"
+    "typescript": "^7.0.2"
   }
 }
