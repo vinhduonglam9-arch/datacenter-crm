@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 import os
+import sys
 import time
 from playwright.sync_api import sync_playwright
 
@@ -7,66 +9,65 @@ os.makedirs(output_dir, exist_ok=True)
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)
-    # 高清分辨率 1600x960
+    # 高清视口 1600x960, scale=2
     context = browser.new_context(viewport={'width': 1600, 'height': 960}, device_scale_factor=2)
     page = context.new_page()
 
-    def capture(name, duration=1.0):
+    def capture(name, duration=1.2):
         time.sleep(duration)
         fp = os.path.join(output_dir, name)
         page.screenshot(path=fp)
-        print(f"Captured: {name}")
+        sys.stdout.buffer.write(f"Captured: {name}\n".encode('utf-8'))
 
-    print("Navigating to http://localhost:3000/...")
-    page.goto('http://localhost:3000/', wait_until='networkidle')
+    sys.stdout.buffer.write(b"Navigating to http://127.0.0.1:3000/...\n")
+    page.goto('http://127.0.0.1:3000/', wait_until='networkidle')
     time.sleep(2)
 
     # 1. 智算拓扑关系图谱 (主画布视图)
     capture('01-topology-canvas.png', 1)
 
-    # 2. 项目总览仪表盘 (Dashboard)
-    page.locator('button:has-text("项目总览")').first.click()
-    capture('02-project-dashboard.png', 1)
+    # 2. 项目总览仪表盘
+    page.locator('button[aria-label="项目总览"]').first.click()
+    capture('02-project-dashboard.png', 1.5)
 
     # 切回拓扑画布
-    page.locator('button:has-text("拓扑画布")').first.click()
+    page.locator('button[aria-label="拓扑画布"]').first.click()
     time.sleep(1)
 
-    # 3. 突破寻径 / BFS决策链路径分析
-    page.locator('button:has-text("突破寻径")').first.click()
-    capture('03-influence-path.png', 1)
-    # 点击右上角关闭按钮
-    page.locator('.fixed.inset-0.z-50 button:has(svg.lucide-x)').first.click()
-    time.sleep(0.5)
+    # 3. 历史快照对比抽屉
+    page.locator('button[aria-label="历史快照对比"]').first.click()
+    capture('03-influence-path.png', 1.5)
+    # 点击抽屉内部的关闭按钮 (svg.lucide-x)
+    page.locator('.fixed.inset-0 button:has(svg.lucide-x)').first.click()
+    time.sleep(0.8)
 
     # 4. 本地离线 OCR 识别弹窗
-    page.locator('button:has-text("名片OCR")').first.click()
-    capture('04-ocr-recognition.png', 1)
+    page.locator('button[aria-label="名片OCR"]').first.click()
+    capture('04-ocr-recognition.png', 1.5)
     # 关闭弹窗
-    close_btn = page.locator('.fixed.inset-0.z-50 button:has(svg.lucide-x), .fixed.inset-0.z-50 button:has-text("取消")').first
-    if close_btn.count() > 0:
-        close_btn.click()
-    else:
-        page.keyboard.press("Escape")
+    page.locator('.fixed.inset-0 button:has(svg.lucide-x)').first.click()
+    time.sleep(0.8)
+
+    # 5. 样式中心
+    page.locator('button[aria-label="样式中心"]').first.click()
+    capture('05-style-center.png', 1.5)
+    # 关闭弹窗
+    page.locator('.fixed.inset-0 button:has(svg.lucide-x)').first.click()
+    time.sleep(0.8)
+
+    # 6. 图层管理器
+    page.locator('button[aria-label="图层管理"]').first.click()
+    capture('06-layer-management.png', 1.5)
+    # 点击关闭或再次点击切换
+    page.locator('button[aria-label="图层管理"]').first.click()
+    time.sleep(0.8)
+
+    # 7. 导出中心
+    page.locator('button[aria-label="导出与备份"]').first.click()
     time.sleep(0.5)
-
-    # 5. 样式中心 (20x20x20 预设与自定义视觉系统)
-    page.locator('button:has-text("样式中心")').first.click()
-    capture('05-style-center.png', 1)
-    close_btn = page.locator('.fixed.inset-0.z-50 button:has(svg.lucide-x), .fixed.inset-0.z-50 button:has-text("完成"), .fixed.inset-0.z-50 button:has-text("关闭")').first
-    if close_btn.count() > 0:
-        close_btn.click()
-    else:
-        page.keyboard.press("Escape")
-    time.sleep(0.5)
-
-    # 6. 图层管理器 (展开要素分层层级面板)
-    page.locator('button:has-text("图层管理")').first.click()
-    capture('06-layer-management.png', 1)
-
-    # 7. 高清导出与数据中心战报生成
-    page.locator('button:has-text("高清导出")').first.click()
-    capture('07-export-center.png', 1)
+    # 点击弹出菜单的第一项打开导出中心模态框
+    page.locator('div.absolute.right-0 button').first.click()
+    capture('07-export-center.png', 1.5)
 
     browser.close()
-    print("All screenshots generated successfully in docs/screenshots/")
+    sys.stdout.buffer.write(b"All 7 screenshots generated successfully in docs/screenshots/\n")
